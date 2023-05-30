@@ -2,7 +2,7 @@
 #[derive(Debug, PartialEq, Clone, Copy)]
 enum Token {
     Old,
-    Num(u128),
+    Num(u64),
     Add,
     Mul,
     Div,
@@ -10,17 +10,17 @@ enum Token {
 
 #[derive(Debug, PartialEq)]
 struct Monkey {
-    items: Vec<u128>,
+    items: Vec<u64>,
     operation: Vec<Token>,
-    test: u128,
-    targets: [u128; 2],
+    test: u64,
+    targets: [u64; 2],
 }
 
-fn parse_int_list(input: &str) -> Vec<u128> {
+fn parse_int_list(input: &str) -> Vec<u64> {
     input
         .split(",")
         .into_iter()
-        .map(|x| x.trim().parse::<u128>().unwrap())
+        .map(|x| x.trim().parse::<u64>().unwrap())
         .collect()
 }
 
@@ -31,13 +31,13 @@ fn parse_operation(input: &str) -> Vec<Token> {
             "old" => Token::Old,
             "+" => Token::Add,
             "*" => Token::Mul,
-            x => Token::Num(x.parse::<u128>().unwrap()),
+            x => Token::Num(x.parse::<u64>().unwrap()),
         })
     }
     tokens
 }
 
-fn run_operation(old: u128, tokens: Vec<Token>) -> u128 {
+fn run_operation(old: u64, tokens: Vec<Token>) -> u64 {
     let mut remaining_tokens = tokens.to_vec();
     while remaining_tokens.len() >= 3 {
         let evaluated_value = apply_operation(
@@ -60,7 +60,7 @@ fn run_operation(old: u128, tokens: Vec<Token>) -> u128 {
     panic!()
 }
 
-fn apply_operation(old: u128, tokens: [Token; 3]) -> u128 {
+fn apply_operation(old: u64, tokens: [Token; 3]) -> u64 {
     let a = match tokens[0] {
         Token::Old => old,
         Token::Num(x) => x,
@@ -80,13 +80,13 @@ fn apply_operation(old: u128, tokens: [Token; 3]) -> u128 {
     }
 }
 
-fn num_from_end(input: &str) -> u128 {
+fn num_from_end(input: &str) -> u64 {
     input
         .split(" ")
         .into_iter()
         .last()
         .unwrap()
-        .parse::<u128>()
+        .parse::<u64>()
         .unwrap()
 }
 
@@ -101,17 +101,17 @@ fn parse_monkey(input: &str) -> Monkey {
     }
 }
 
-pub fn process_part_1(input: &str) -> u128 {
+pub fn process_part_1(input: &str) -> u64 {
     process_monkey_business(input, 20, vec![Token::Div, Token::Num(3)])
 }
-pub fn process_part_2(input: &str) -> u128 {
+pub fn process_part_2(input: &str) -> u64 {
     process_monkey_business(input, 10_000, vec![])
 }
-fn process_monkey_business(input: &str, rounds: usize, mitigation: Vec<Token>) -> u128 {
+fn process_monkey_business(input: &str, rounds: usize, mitigation: Vec<Token>) -> u64 {
     let mut monkies: Vec<Monkey> = input.split("\n\n").into_iter().map(parse_monkey).collect();
-    let modulo: u128 = monkies.iter().map(|x| x.test).product();
+    let modulo: u64 = monkies.iter().map(|x| x.test).product();
     // counters for monkeys
-    let mut inspection_counts: Vec<u128> = Vec::new();
+    let mut inspection_counts: Vec<u64> = Vec::new();
     for _ in 0..monkies.len() {
         inspection_counts.push(0);
     }
@@ -156,14 +156,14 @@ mod tests {
     #[case(3, [Token::Old,Token::Mul,Token::Num(4)], 12)]
     #[case(12, [Token::Old,Token::Div,Token::Num(4)], 3)]
     #[case(12, [Token::Old,Token::Div,Token::Num(5)], 2)]
-    fn apply_operation_works(#[case] old: u128, #[case] tokens: [Token; 3], #[case] expected: u128) {
+    fn apply_operation_works(#[case] old: u64, #[case] tokens: [Token; 3], #[case] expected: u64) {
         assert_eq!(apply_operation(old, tokens), expected);
     }
 
     #[rstest]
     #[case(3, vec![Token::Old,Token::Add,Token::Num(4)], 7)]
     #[case(3, vec![Token::Old,Token::Add,Token::Num(4), Token::Mul, Token::Num(3)], 21)]
-    fn run_operation_works(#[case] old: u128, #[case] tokens: Vec<Token>, #[case] expected: u128) {
+    fn run_operation_works(#[case] old: u64, #[case] tokens: Vec<Token>, #[case] expected: u64) {
         assert_eq!(run_operation(old, tokens), expected);
     }
 
