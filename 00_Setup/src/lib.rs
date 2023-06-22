@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 pub fn process_part_1(input: &str) -> String {
     input.to_string()
 }
