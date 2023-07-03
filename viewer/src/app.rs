@@ -1,27 +1,43 @@
 extern crate aoc_14;
 use std::{
-    collections::{HashMap, VecDeque},
     io::{Cursor, Read, Seek, SeekFrom},
 };
+use gloo::timers::callback::Interval;
 
 use image::{ImageBuffer, Rgb, RgbImage};
 
 use std::collections::HashSet;
-use std::str::Split;
 
-use aoc_14::{get_grid, get_grid_repr, get_repr, step_limited, Coords};
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
-use web_sys::HtmlInputElement;
+use aoc_14::{get_grid, get_grid_repr,  step_limited, Coords};
 use yew::prelude::*;
 
 pub struct App {
     repr: String,
     map: HashSet<Coords>,
     sand: HashSet<Coords>,
+    interval: Option<Interval>,
 }
 
 pub enum Msg {
     Step(usize),
+    Reset,
+    Tick,
+    StartInterval,
+    Cancel,
+}
+
+impl App{
+    fn step(&mut self, num_steps: usize) -> bool{
+        let mut done = false;
+        for _ in 0..num_steps {
+            if step_limited(&mut self.map, &mut self.sand) {
+                done = true;
+                break;
+            }
+        }
+        self.repr = get_grid_img(&self.map, &self.sand);
+        done
+    }
 }
 
 impl Component for App {
@@ -40,6 +56,9 @@ impl Component for App {
                     <img style="height:500px;image-rendering: pixelated;" src={self.repr.clone()}/>
                 </div>
                 <div>
+                <button onclick={ctx.link().callback(|_|  Msg::Reset)}>{"Reset"}</button>
+                <button onclick={ctx.link().callback(|_|  Msg::StartInterval)}>{"Start"}</button>
+                <button onclick={ctx.link().callback(|_|  Msg::Cancel)}>{"Cancel"}</button>
                     {steps.iter()
                         .map(|(x, callback)| html!{
                             <button onclick={callback}>{format!("Step {}", x)}</button>}
@@ -51,20 +70,34 @@ impl Component for App {
     }
 
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Step(x) => {
                 log::info!("update");
                 // self.image = img::new_image(self.image_size);
-                for _ in 0..x {
-                    if step_limited(&mut self.map, &mut self.sand) {
-                        break;
-                    }
-                }
-                self.repr = get_grid_img(&self.map, &self.sand);
+                self.step(x);
 
                 true
-            }
+            },
+            Msg::Reset =>{
+                (self.map, self.sand) = get_grid();
+                self.repr = get_grid_img(&self.map, &self.sand);
+                true
+            },
+            Msg::StartInterval=>{
+                let handle = {
+                    let link = ctx.link().clone();
+                    Interval::new(10, move || link.send_message(Msg::Tick))
+                };
+                self.interval = Some(handle);
+                true
+
+
+            },
+            Msg::Tick =>{self.step(1); true},
+            Msg::Cancel =>{
+                self.interval = None;
+                true},
         }
     }
 
@@ -75,6 +108,7 @@ impl Component for App {
             repr: get_grid_img(&map, &sand),
             map,
             sand,
+            interval: None,
         }
     }
 }

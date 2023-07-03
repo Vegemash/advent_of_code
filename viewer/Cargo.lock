@@ -1189,6 +1189,7 @@ version = "0.1.0"
 dependencies = [
  "aoc_14",
  "base64",
+ "gloo",
  "image",
  "log",
  "wasm-bindgen",
