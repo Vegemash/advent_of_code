@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 #[derive(Debug, PartialEq, Copy, Clone, Eq, Hash)]
 pub struct Coords {
     x: i32,
@@ -15,29 +17,7 @@ pub fn process_part_1(input: &str) -> String {
 }
 
 pub fn process_part_2(input: &str) -> String {
-    input.to_string()
-}
-
-fn gen_map(input: &str) -> String {
-    let map = get_map(input);
-    let (minx, miny, maxx, maxy) = get_extents(&map);
-    let mut output = "".to_string();
-    for y in miny..=maxy {
-        for x in minx..=maxx {
-            let pos = Coords { x, y };
-            if map.iter().any(|r| r.sensor == pos) {
-                output.push_str("S");
-            } else if map.iter().any(|r| r.beacon == pos) {
-                output.push_str("B");
-            } else {
-                output.push_str(".");
-            }
-        }
-        if y != maxy {
-            output.push_str("\n")
-        }
-    }
-    output
+    get_empty_freq(&get_map(input), 4_000_000).to_string()
 }
 
 fn get_map(input: &str) -> Vec<Record> {
@@ -112,25 +92,66 @@ fn man_dist(a: &Coords, b: &Coords) -> i32 {
 fn count_empty(map: &Vec<Record>, row: i32) -> usize {
     let (xmin, _, xmax, _) = get_extents(map);
     let mut cells = vec![];
+    let mut empty_count = 0;
+    let known_beacons = map
+        .iter()
+        .map(|r| r.beacon.clone())
+        .collect::<HashSet<Coords>>();
+
     for x in xmin..=xmax {
-        cells.push((Coords { x, y: row }, false));
+        cells.push(Coords { x, y: row });
     }
-    for record in map.iter() {
-        let dist = man_dist(&record.sensor, &record.beacon);
-        for cell in cells.iter_mut() {
-            if man_dist(&record.sensor, &cell.0) <= dist {
-                cell.1 = true;
+
+    for cell in cells.iter().filter(|c| known_beacons.get(&c).is_none()) {
+        for record in map.iter() {
+            let dist = man_dist(&record.sensor, &record.beacon);
+            if man_dist(&record.sensor, &cell) <= dist {
+                empty_count += 1;
+                break;
             }
         }
     }
-    for record in map.iter() {
-        for cell in cells.iter_mut() {
-            if cell.0 == record.beacon {
-                cell.1 = false;
+
+    empty_count
+}
+
+#[allow(dead_code)]
+fn get_empty_freq(map: &Vec<Record>, max_extent: i32) -> isize {
+    let mut x;
+    let known_beacons = map
+        .iter()
+        .map(|r| r.beacon.clone())
+        .collect::<HashSet<Coords>>();
+    for y in 0..=max_extent {
+        x = 0;
+        while x <= max_extent {
+            let mut skip = false;
+            let cell = Coords { x, y };
+
+            for record in map.iter() {
+                let sensor_range = man_dist(&record.sensor, &record.beacon);
+                if man_dist(&record.sensor, &cell) <= sensor_range {
+                    skip = true;
+                    // We could end up jumping to part way through a sensor area
+                    // so check here if we are on the left of the sensor
+                    if x <= record.sensor.x {
+                        // Skip to the other side of this sensor area
+                        x += (record.sensor.x - x).abs() * 2;
+                    } else {
+                        x += sensor_range - man_dist(&record.sensor, &cell);
+                    }
+                    break;
+                }
             }
+
+            if !skip  && known_beacons.get(&cell).is_none(){
+                println!("{} {}", x, y);
+                return x as isize * 4_000_000 + y as isize ;
+            }
+            x += 1;
         }
     }
-    cells.iter().filter(|c| c.1).count()
+    panic!()
 }
 
 #[cfg(test)]
@@ -146,7 +167,7 @@ mod tests {
     fn test_map_extents() {
         assert_eq!(
             get_extents(&get_map(include_str!("../data/test_input"))),
-            (-2, 0, 25, 22)
+            (-8, -10, 28, 26)
         );
     }
     #[test]
@@ -159,45 +180,10 @@ mod tests {
             }
         );
     }
-    #[test]
-    fn test_map_generation() {
-        let result = gen_map(include_str!("../data/test_input"));
-        assert_eq!(
-            result,
-            "\
-....S.......................
-......................S.....
-...............S............
-................SB..........
-............................
-............................
-............................
-..........S.......S.........
-............................
-............................
-....B.......................
-..S.........................
-............................
-............................
-..............S.......S.....
-B...........................
-...........SB...............
-................S..........B
-....S.......................
-............................
-............S......S........
-............................
-.......................B...."
-        );
-    }
 
     #[test]
-    #[ignore]
-    fn process_part_2_works() {
-        let result = process_part_2(
-            "
-",
-        );
-        assert_eq!(result, "MCD");
+    fn test_get_empty_freq() {
+        let map = get_map(include_str!("../data/test_input"));
+        assert_eq!(get_empty_freq(&map, 20), 56000011);
     }
 }
