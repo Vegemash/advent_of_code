@@ -12,19 +12,13 @@ mod tests {
 
     #[test]
     fn process_part_1_works() {
-        let result = process_part_1(
-            "
-",
-        );
+        let result = process_part_1(include_str!("../data/test_input"));
         assert_eq!(result, "CMZ");
     }
     #[test]
     #[ignore]
     fn process_part_2_works() {
-        let result = process_part_2(
-            "
-",
-        );
-        assert_eq!(result, "MCD");
+        let result = process_part_2(include_str!("../data/test_input"));
+        assert_eq!(result, "CMZ");
     }
 }
