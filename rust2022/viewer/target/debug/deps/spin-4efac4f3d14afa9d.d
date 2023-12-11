@@ -1,0 +1,12 @@
+/home/isaac.jackson/Code/personal/rust/advent_of_code/viewer/target/debug/deps/spin-4efac4f3d14afa9d.rmeta: /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lib.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/barrier.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lazy.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex/spin.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/once.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/relax.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/rwlock.rs
+
+/home/isaac.jackson/Code/personal/rust/advent_of_code/viewer/target/debug/deps/spin-4efac4f3d14afa9d.d: /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lib.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/barrier.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lazy.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex/spin.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/once.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/relax.rs /home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/rwlock.rs
+
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lib.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/barrier.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/lazy.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/mutex/spin.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/once.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/relax.rs:
+/home/isaac.jackson/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spin-0.9.8/src/rwlock.rs:
