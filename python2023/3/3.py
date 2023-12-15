@@ -38,7 +38,10 @@ def parser(string: str):
 
     return numbers, symbols
 
-def gear_parser(string: str):
+
+def gear_parser(
+    string: str,
+) -> tuple[list[tuple[int, int]], list[tuple[tuple[int, int, int], int]]]:
     numbers = []
     gears = []
     for lno, line in enumerate(string.splitlines()):
@@ -62,6 +65,26 @@ def gear_parser(string: str):
 
     return numbers, gears
 
+
+def get_ratio(
+    gear: tuple[int, int], numbers: list[tuple[tuple[int, int, int], int]]
+) -> int:
+    gear_x, gear_y = gear
+    found_numbers = []
+    for (start_x, end_x, line_no), num in numbers:
+        if abs(gear_y - line_no) > 1:
+            continue
+        for char_x in range(start_x, end_x):
+            if abs(char_x - gear_x) < 2:
+                found_numbers.append(num)
+                if len(found_numbers) > 2:
+                    return 0
+                break
+    if len(found_numbers) < 2:
+        return 0
+    return found_numbers[0] * found_numbers[1]
+
+
 def internal(symbols, c_x, c_xlast, c_y) -> bool:
     for sx, sy in symbols:
         for cx in range(c_x, c_xlast):
@@ -78,9 +101,15 @@ def summer(numbers, symbols) -> int:
     return sum
 
 
+def gear_summer(numbers, gears) -> int:
+    return sum(get_ratio(gear, numbers) for gear in gears)
+
+
 if __name__ == "__main__":
     print(summer(*parser(example)))
     print(summer(*parser((Path(__file__).parent / "data").read_text())))
+    print(gear_summer(*gear_parser(example)))
+    print(gear_summer(*gear_parser((Path(__file__).parent / "data").read_text())))
 
 
 @pytest.mark.parametrize(
@@ -93,4 +122,17 @@ if __name__ == "__main__":
     ],
 )
 def test_summer(string: str, expected: int) -> None:
+    assert summer(*parser(string)) == expected
+
+
+@pytest.mark.parametrize(
+    "string,expected",
+    [
+        ("123", 0),
+        ("123.@", 0),
+        ("123@", 123),
+        ("123\n..@", 123),
+    ],
+)
+def test_gear_summer(string: str, expected: int) -> None:
     assert summer(*parser(string)) == expected
