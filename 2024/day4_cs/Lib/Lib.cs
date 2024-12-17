@@ -131,8 +131,8 @@ public static class LibC
             tl = grid[(start.Item1 - 1, start.Item2 - 1)];
             br = grid[(start.Item1 + 1, start.Item2 + 1)];
 
-            tr = grid[(start.Item1 - 1, start.Item2 - 1)];
-            bl = grid[(start.Item1 - 1, start.Item2 - 1)];
+            tr = grid[(start.Item1 + 1, start.Item2 - 1)];
+            bl = grid[(start.Item1 - 1, start.Item2 + 1)];
         }
         catch (Exception ex)
         {
