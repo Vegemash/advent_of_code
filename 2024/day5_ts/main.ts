@@ -3,8 +3,8 @@ export function part1(input: string): string {
   let [rules, updates] = input
     .split("\n\n")
     .map((x) => x.split("\n").filter((x) => x != ""));
-  // console.log("rules", rules);
-  // console.log("updates", updates);
+  console.log("rules", rules);
+  console.log("updates", updates);
 
   let pageRules = new Map<number, Set<number>>();
   rules.forEach((rule) => {
@@ -15,7 +15,7 @@ export function part1(input: string): string {
       pageRules.get(after)?.add(before);
     }
   });
-  // console.log(pageRules);
+  console.log(pageRules);
   let good_updates: Array<Array<number>> = new Array();
   updates.forEach((update) => {
     let pages: number[] = update.split(",").filter((x) => x != "").map((x) => parseInt(x));
@@ -26,7 +26,7 @@ export function part1(input: string): string {
       if (pageRules.has(current_page)) {
         let violations: Set<number> = pageRules.get(current_page)?.intersection(new Set(after_pages)) ?? new Set([]);
         if (violations.size > 0) {
-          // console.log(current_page, "violations", violations, " ", pages);
+          console.log(current_page, "violations", violations, " ", pages);
           well_ordered = false;
           break;
         }
